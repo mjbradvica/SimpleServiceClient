@@ -10,7 +10,11 @@ namespace SimpleServiceClient.Samples.Planets
     /// <inheritdoc cref="IPlanetClient" />
     public class PlanetServiceClient : BaseServiceClient<PlanetProfile>, IPlanetClient
     {
-        /// <inheritdoc />
+        /// <summary>
+        /// Initializes a new instance of the <see cref="PlanetServiceClient"/> class.
+        /// </summary>
+        /// <param name="serviceManager">An instance of the <see cref="IServiceManager{T}"/> interface.</param>
+        /// <param name="logger">An instance of the <see cref="ILogger{T}"/> interface.</param>
         public PlanetServiceClient(IServiceManager<PlanetProfile> serviceManager, ILogger<BaseServiceClient<PlanetProfile>> logger)
             : base(serviceManager, logger)
         {

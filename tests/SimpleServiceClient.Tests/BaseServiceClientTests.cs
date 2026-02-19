@@ -4,12 +4,12 @@
 
 namespace SimpleServiceClient.Tests
 {
+    using Microsoft.Extensions.Logging;
     using Moq;
-    using SimpleServiceClient.Abstractions;
-    using SimpleServiceClient.Clients;
     using SimpleServiceClient.Tests.TestService;
     using System.Net;
     using System.Net.Http.Json;
+
     /// <summary>
     /// Tests for the <see cref="BaseServiceClient{TProfile}"/> class.
     /// </summary>
@@ -25,7 +25,8 @@ namespace SimpleServiceClient.Tests
         public BaseServiceClientTests()
         {
             _serviceManager = new Mock<IServiceManager<TestProfile>>();
-            _serviceClient = new TestServiceClient(_serviceManager.Object);
+            var logger = new Mock<ILogger<BaseServiceClient<TestProfile>>>();
+            _serviceClient = new TestServiceClient(_serviceManager.Object, logger.Object);
         }
 
         /// <summary>
