@@ -10,6 +10,7 @@ namespace SimpleServiceClient.Samples
     using Polly.Retry;
     using Polly.Timeout;
     using SimpleServiceClient.Registration;
+    using SimpleServiceClient.Samples.People;
     using SimpleServiceClient.Samples.Planets;
 
     /// <summary>
@@ -38,13 +39,21 @@ namespace SimpleServiceClient.Samples
                 },
                 pipeline);
 
+            services.AddServiceClient<IPeopleClient, PeopleServiceClient>();
+
             var provider = services.BuildServiceProvider();
 
-            var service = provider.GetRequiredService<IPlanetClient>();
+            var planetClient = provider.GetRequiredService<IPlanetClient>();
 
-            var result = await service.GetPlanet(2, CancellationToken.None);
+            var planet = await planetClient.GetPlanet(2, CancellationToken.None);
 
-            Console.WriteLine(result);
+            var personClient = provider.GetRequiredService<IPeopleClient>();
+
+            var person = await personClient.GetPerson(3, CancellationToken.None);
+
+            Console.WriteLine(planet);
+
+            Console.WriteLine(person);
         }
     }
 }

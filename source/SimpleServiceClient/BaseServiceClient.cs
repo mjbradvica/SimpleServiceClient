@@ -45,14 +45,4 @@ namespace SimpleServiceClient
             return result;
         }
     }
-
-    /// <inheritdoc />
-    public abstract class BaseServiceClient : BaseServiceClient<DefaultClientProfile>
-    {
-        /// <inheritdoc />
-        protected BaseServiceClient(IServiceManager<DefaultClientProfile> serviceManager)
-            : base(serviceManager)
-        {
-        }
-    }
 }

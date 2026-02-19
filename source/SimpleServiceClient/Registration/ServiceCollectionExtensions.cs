@@ -14,6 +14,41 @@ namespace SimpleServiceClient.Registration
     public static class ServiceCollectionExtensions
     {
         /// <summary>
+        /// Registers a service client to the container using the default profile.
+        /// </summary>
+        /// <typeparam name="TClient">The type of the client interface.</typeparam>
+        /// <typeparam name="TImplementation">The type of the client implementation.</typeparam>
+        /// <param name="services">An instance of the <see cref="IServiceCollection"/> interface.</param>
+        public static void AddServiceClient<TClient, TImplementation>(this IServiceCollection services)
+            where TClient : class
+            where TImplementation : BaseServiceClient<DefaultClientProfile>, TClient
+        {
+            services.AddTransient<IServiceManager<DefaultClientProfile>, ServiceManager<DefaultClientProfile>>();
+
+            services.AddTransient<TClient, TImplementation>();
+
+            services.AddHttpClient<DefaultClientProfile>();
+        }
+
+        /// <summary>
+        /// Registers a service client to the container using the default profile.
+        /// </summary>
+        /// <typeparam name="TClient">The type of the client interface.</typeparam>
+        /// <typeparam name="TImplementation">The type of the client implementation.</typeparam>
+        /// <param name="services">An instance of the <see cref="IServiceCollection"/> interface.</param>
+        /// <param name="pipeline">An <see cref="ResiliencePipeline{T}"/> instance for policy registration.</param>
+        public static void AddServiceClient<TClient, TImplementation>(this IServiceCollection services, ResiliencePipeline<HttpResponseMessage> pipeline)
+            where TClient : class
+            where TImplementation : BaseServiceClient<DefaultClientProfile>, TClient
+        {
+            services.AddTransient<IServiceManager<DefaultClientProfile>, ServiceManager<DefaultClientProfile>>();
+
+            services.AddTransient<TClient, TImplementation>();
+
+            services.AddHttpClient<DefaultClientProfile>().AddPolicyHandler(pipeline.AsAsyncPolicy());
+        }
+
+        /// <summary>
         /// Registers a service client to the container.
         /// </summary>
         /// <typeparam name="TClient">The type of the client interface.</typeparam>
