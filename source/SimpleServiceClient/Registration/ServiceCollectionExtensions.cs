@@ -50,7 +50,7 @@ namespace SimpleServiceClient.Registration
         {
             services.AddTransient<IServiceManager<TProfile>, ServiceManager<TProfile>>();
 
-            services.AddHttpClient<TProfile>(clientAction);
+            services.AddHttpClient<TProfile>(clientAction).AddPolicyHandler(pipeline.AsAsyncPolicy());
 
             services.AddTransient<TClient, TImplementation>();
         }
