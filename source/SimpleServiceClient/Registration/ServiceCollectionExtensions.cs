@@ -6,8 +6,7 @@ namespace SimpleServiceClient.Registration
 {
     using Microsoft.Extensions.DependencyInjection;
     using Polly;
-    using SimpleServiceClient.Abstractions;
-    using SimpleServiceClient.Clients;
+    using SimpleServiceClient;
 
     /// <summary>
     /// Extension methods that allow for easy registration of the SimpleServiceClient library.
@@ -50,7 +49,7 @@ namespace SimpleServiceClient.Registration
         {
             services.AddTransient<IServiceManager<TProfile>, ServiceManager<TProfile>>();
 
-            services.AddHttpClient<TProfile>(clientAction);
+            services.AddHttpClient<TProfile>(clientAction).AddPolicyHandler(pipeline.AsAsyncPolicy());
 
             services.AddTransient<TClient, TImplementation>();
         }

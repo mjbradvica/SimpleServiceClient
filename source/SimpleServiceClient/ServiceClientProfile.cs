@@ -2,7 +2,7 @@
 // Copyright (c) Simplex Software LLC. All rights reserved.
 // </copyright>
 
-namespace SimpleServiceClient.Clients
+namespace SimpleServiceClient
 {
     /// <summary>
     /// Designator for a service client profile.

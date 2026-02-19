@@ -2,12 +2,14 @@
 // Copyright (c) Simplex Software LLC. All rights reserved.
 // </copyright>
 
-namespace SimpleServiceClient.Abstractions
+namespace SimpleServiceClient
 {
     /// <summary>
     /// Interface to interface with HTTP actions.
     /// </summary>
-    public interface IServiceManager<TService>
+    /// <typeparam name="TProfile">The type of the client profile.</typeparam>
+    public interface IServiceManager<TProfile>
+        where TProfile : ServiceClientProfile
     {
         /// <summary>
         /// Performs a GET request against uri.
@@ -16,5 +18,10 @@ namespace SimpleServiceClient.Abstractions
         /// <param name="cancellationToken">A <see cref="CancellationToken"/>.</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
         Task<HttpResponseMessage> GetAsync(Uri uri, CancellationToken cancellationToken = default);
+    }
+
+    /// <inheritdoc />
+    public interface IServiceManager : IServiceManager<DefaultClientProfile>
+    {
     }
 }

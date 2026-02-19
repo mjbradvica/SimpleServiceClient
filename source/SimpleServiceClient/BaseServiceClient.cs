@@ -2,9 +2,8 @@
 // Copyright (c) Simplex Software LLC. All rights reserved.
 // </copyright>
 
-namespace SimpleServiceClient.Clients
+namespace SimpleServiceClient
 {
-    using SimpleServiceClient.Abstractions;
     using System.Net.Http.Json;
 
     /// <summary>
@@ -44,6 +43,16 @@ namespace SimpleServiceClient.Clients
             }
 
             return result;
+        }
+    }
+
+    /// <inheritdoc />
+    public abstract class BaseServiceClient : BaseServiceClient<DefaultClientProfile>
+    {
+        /// <inheritdoc />
+        protected BaseServiceClient(IServiceManager<DefaultClientProfile> serviceManager)
+            : base(serviceManager)
+        {
         }
     }
 }

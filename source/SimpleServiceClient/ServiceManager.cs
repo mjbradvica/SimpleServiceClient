@@ -2,10 +2,8 @@
 // Copyright (c) Simplex Software LLC. All rights reserved.
 // </copyright>
 
-namespace SimpleServiceClient.Clients
+namespace SimpleServiceClient
 {
-    using SimpleServiceClient.Abstractions;
-
     /// <inheritdoc />
     public class ServiceManager<TProfile> : IServiceManager<TProfile>
         where TProfile : ServiceClientProfile

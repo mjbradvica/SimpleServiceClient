@@ -4,8 +4,7 @@
 
 namespace SimpleServiceClient.Samples.Planets
 {
-    using SimpleServiceClient.Abstractions;
-    using SimpleServiceClient.Clients;
+    using SimpleServiceClient;
 
     /// <inheritdoc cref="IPlanetClient" />
     public class PlanetServiceClient : BaseServiceClient<PlanetProfile>, IPlanetClient
