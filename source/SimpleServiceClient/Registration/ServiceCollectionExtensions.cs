@@ -4,16 +4,52 @@
 
 namespace SimpleServiceClient.Registration
 {
+    using FactoryFoundation;
     using Microsoft.Extensions.DependencyInjection;
     using Polly;
-    using SimpleServiceClient.Abstractions;
-    using SimpleServiceClient.Clients;
+    using SimpleServiceClient;
+    using System.Reflection;
 
     /// <summary>
     /// Extension methods that allow for easy registration of the SimpleServiceClient library.
     /// </summary>
     public static class ServiceCollectionExtensions
     {
+        /// <summary>
+        /// Registers a service client to the container using the default profile.
+        /// </summary>
+        /// <typeparam name="TClient">The type of the client interface.</typeparam>
+        /// <typeparam name="TImplementation">The type of the client implementation.</typeparam>
+        /// <param name="services">An instance of the <see cref="IServiceCollection"/> interface.</param>
+        public static void AddServiceClient<TClient, TImplementation>(this IServiceCollection services)
+            where TClient : class
+            where TImplementation : BaseServiceClient<DefaultClientProfile>, TClient
+        {
+            services.AddTransient<IServiceManager<DefaultClientProfile>, ServiceManager<DefaultClientProfile>>();
+
+            services.AddTransient<TClient, TImplementation>();
+
+            services.AddHttpClient<DefaultClientProfile>();
+        }
+
+        /// <summary>
+        /// Registers a service client to the container using the default profile.
+        /// </summary>
+        /// <typeparam name="TClient">The type of the client interface.</typeparam>
+        /// <typeparam name="TImplementation">The type of the client implementation.</typeparam>
+        /// <param name="services">An instance of the <see cref="IServiceCollection"/> interface.</param>
+        /// <param name="pipeline">An <see cref="ResiliencePipeline{T}"/> instance for policy registration.</param>
+        public static void AddServiceClient<TClient, TImplementation>(this IServiceCollection services, ResiliencePipeline<HttpResponseMessage> pipeline)
+            where TClient : class
+            where TImplementation : BaseServiceClient<DefaultClientProfile>, TClient
+        {
+            services.AddTransient<IServiceManager<DefaultClientProfile>, ServiceManager<DefaultClientProfile>>();
+
+            services.AddTransient<TClient, TImplementation>();
+
+            services.AddHttpClient<DefaultClientProfile>().AddPolicyHandler(pipeline.AsAsyncPolicy());
+        }
+
         /// <summary>
         /// Registers a service client to the container.
         /// </summary>
@@ -53,6 +89,30 @@ namespace SimpleServiceClient.Registration
             services.AddHttpClient<TProfile>(clientAction).AddPolicyHandler(pipeline.AsAsyncPolicy());
 
             services.AddTransient<TClient, TImplementation>();
+        }
+
+        /// <summary>
+        /// Registers a translated service client to the container.
+        /// </summary>
+        /// <typeparam name="TClient">The type of the client interface.</typeparam>
+        /// <typeparam name="TImplementation">The type of the client implementation.</typeparam>
+        /// <typeparam name="TProfile">The type of the service profile.</typeparam>
+        /// <param name="services">An instance of the <see cref="IServiceCollection"/> interface.</param>
+        /// <param name="clientAction">An <see cref="Action"/> to configure the <see cref="HttpClient"/>.</param>
+        /// <param name="pipeline">An <see cref="ResiliencePipeline{T}"/> instance for policy registration.</param>
+        /// <param name="assemblies">An <see cref="IEnumerable{T}"/> of <see cref="Assembly"/> to register factories for.</param>
+        public static void AddTranslatedServiceClient<TClient, TImplementation, TProfile>(this IServiceCollection services, Action<HttpClient> clientAction, ResiliencePipeline<HttpResponseMessage> pipeline, params Assembly[] assemblies)
+            where TClient : class
+            where TImplementation : BaseTranslatedServiceClient<TProfile>, TClient
+            where TProfile : ServiceClientProfile
+        {
+            services.AddTransient<IServiceManager<TProfile>, ServiceManager<TProfile>>();
+
+            services.AddHttpClient<TProfile>(clientAction).AddPolicyHandler(pipeline.AsAsyncPolicy());
+
+            services.AddTransient<TClient, TImplementation>();
+
+            services.AddFactoryFoundation(assemblies);
         }
     }
 }

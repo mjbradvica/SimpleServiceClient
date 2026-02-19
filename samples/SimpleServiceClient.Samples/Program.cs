@@ -10,7 +10,10 @@ namespace SimpleServiceClient.Samples
     using Polly.Retry;
     using Polly.Timeout;
     using SimpleServiceClient.Registration;
+    using SimpleServiceClient.Samples.People;
     using SimpleServiceClient.Samples.Planets;
+    using SimpleServiceClient.Samples.TranslatedPlanets;
+    using System.Reflection;
 
     /// <summary>
     /// Sample entry class.
@@ -38,13 +41,27 @@ namespace SimpleServiceClient.Samples
                 },
                 pipeline);
 
+            services.AddServiceClient<IPeopleClient, PeopleServiceClient>();
+
+            services.AddTranslatedServiceClient<ITranslatedPlanetClient, TranslatedPlanetServiceClient, PlanetProfile>(
+                client =>
+                {
+                    client.BaseAddress = new Uri("https://swapi.dev/api/");
+                },
+                pipeline,
+                Assembly.GetExecutingAssembly());
+
             var provider = services.BuildServiceProvider();
 
-            var service = provider.GetRequiredService<IPlanetClient>();
+            var planetClient = provider.GetRequiredService<ITranslatedPlanetClient>();
 
-            var result = await service.GetPlanet(2, CancellationToken.None);
+            var planet = await planetClient.GetPlanet(5, CancellationToken.None);
 
-            Console.WriteLine(result);
+            var personClient = provider.GetRequiredService<IPeopleClient>();
+
+            var person = await personClient.GetPerson(3, CancellationToken.None);
+
+            Console.WriteLine(planet);
         }
     }
 }

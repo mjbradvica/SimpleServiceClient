@@ -4,10 +4,8 @@
 
 namespace SimpleServiceClient.Samples.Planets
 {
-    using SimpleServiceClient.Clients;
-
     /// <inheritdoc />
-    public class PlanetProfile : ServiceClientProfile
+    public sealed class PlanetProfile : ServiceClientProfile
     {
         /// <inheritdoc />
         public PlanetProfile(HttpClient httpClient)

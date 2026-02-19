@@ -4,25 +4,22 @@
 
 namespace SimpleServiceClient.Samples.Planets
 {
-    using SimpleServiceClient.Abstractions;
-    using SimpleServiceClient.Clients;
+    using Microsoft.Extensions.Logging;
+    using SimpleServiceClient;
 
     /// <inheritdoc cref="IPlanetClient" />
     public class PlanetServiceClient : BaseServiceClient<PlanetProfile>, IPlanetClient
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="PlanetServiceClient"/> class.
-        /// </summary>
-        /// <param name="serviceManager">An instance of the <see cref="IServiceManager{TService}"/> profile.</param>
-        public PlanetServiceClient(IServiceManager<PlanetProfile> serviceManager)
-            : base(serviceManager)
+        /// <inheritdoc />
+        public PlanetServiceClient(IServiceManager<PlanetProfile> serviceManager, ILogger<BaseServiceClient<PlanetProfile>> logger)
+            : base(serviceManager, logger)
         {
         }
 
         /// <inheritdoc/>
         public async Task<Planet?> GetPlanet(int planetId, CancellationToken cancellationToken = default)
         {
-            return await ExecuteGet<Planet>(new Uri($"planets/{planetId}", UriKind.Relative), cancellationToken);
+            return await ExecuteNullableGet<Planet>(new Uri($"planets/{planetId}", UriKind.Relative), cancellationToken);
         }
     }
 }
