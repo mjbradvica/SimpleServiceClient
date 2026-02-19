@@ -1,13 +1,13 @@
-﻿// <copyright file="Planet.cs" company="Simplex Software LLC">
+﻿// <copyright file="TranslatedPlanet.cs" company="Simplex Software LLC">
 // Copyright (c) Simplex Software LLC. All rights reserved.
 // </copyright>
 
-namespace SimpleServiceClient.Samples.Planets
+namespace SimpleServiceClient.Samples.TranslatedPlanets
 {
     /// <summary>
-    /// Planet for test client.
+    /// Sample translated planet.
     /// </summary>
-    public class Planet
+    public class TranslatedPlanet
     {
         /// <summary>
         /// Gets the name.
@@ -27,12 +27,12 @@ namespace SimpleServiceClient.Samples.Planets
         /// <summary>
         /// Gets the diameter.
         /// </summary>
-        public string Diameter { get; init; } = string.Empty;
+        public int Diameter { get; init; }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public override string ToString()
         {
-            return $"{Name} - {Climate} - {Terrain}";
+            return $"{Name} - {Diameter}";
         }
     }
 }
