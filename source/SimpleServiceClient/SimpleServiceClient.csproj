@@ -6,7 +6,4 @@
   <ItemGroup>
     <ProjectReference Include="..\SimpleServiceClient.Abstractions\SimpleServiceClient.Abstractions.csproj" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Registration\" />
-  </ItemGroup>
 </Project>

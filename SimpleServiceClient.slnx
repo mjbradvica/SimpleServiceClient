@@ -2,6 +2,8 @@
   <Folder Name="/Solution Items/">
     <File Path=".editorconfig" />
   </Folder>
-  <Project Path="source/SimpleServiceClient.Abstractions/SimpleServiceClient.Abstractions.csproj" Id="75ca9a62-6112-4d42-a765-19518c27be6a" />
+  <Project Path="samples/SimpleServiceClient.Samples/SimpleServiceClient.Samples.csproj" Id="c270656e-9cdb-440a-a022-a3d430b38def" />
+  <Project Path="source/SimpleServiceClient.Abstractions/SimpleServiceClient.Abstractions.csproj" />
   <Project Path="source/SimpleServiceClient/SimpleServiceClient.csproj" />
+  <Project Path="tests/SimpleServiceClient.Tests/SimpleServiceClient.Tests.csproj" Id="82c84b68-dacf-4bc2-9154-dd32a0c37830" />
 </Solution>
