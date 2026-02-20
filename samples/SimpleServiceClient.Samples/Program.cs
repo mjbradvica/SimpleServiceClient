@@ -12,8 +12,6 @@ namespace SimpleServiceClient.Samples
     using SimpleServiceClient.Registration;
     using SimpleServiceClient.Samples.People;
     using SimpleServiceClient.Samples.Planets;
-    using SimpleServiceClient.Samples.TranslatedPlanets;
-    using System.Reflection;
 
     /// <summary>
     /// Sample entry class.
@@ -43,17 +41,9 @@ namespace SimpleServiceClient.Samples
 
             services.AddServiceClient<IPeopleClient, PeopleServiceClient>();
 
-            services.AddTranslatedServiceClient<ITranslatedPlanetClient, TranslatedPlanetServiceClient, PlanetProfile>(
-                client =>
-                {
-                    client.BaseAddress = new Uri("https://swapi.dev/api/");
-                },
-                pipeline,
-                Assembly.GetExecutingAssembly());
-
             var provider = services.BuildServiceProvider();
 
-            var planetClient = provider.GetRequiredService<ITranslatedPlanetClient>();
+            var planetClient = provider.GetRequiredService<IPlanetClient>();
 
             var planet = await planetClient.GetPlanet(5, CancellationToken.None);
 
