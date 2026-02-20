@@ -4,8 +4,6 @@
 
 namespace SimpleServiceClient.Tests.TestService
 {
-    using SimpleServiceClient.Clients;
-
     /// <inheritdoc />
     public class TestProfile : ServiceClientProfile
     {
