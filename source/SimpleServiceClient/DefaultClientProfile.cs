@@ -5,7 +5,7 @@
 namespace SimpleServiceClient
 {
     /// <inheritdoc />
-    public class DefaultClientProfile : ServiceClientProfile
+    public sealed class DefaultClientProfile : ServiceClientProfile
     {
         /// <inheritdoc />
         public DefaultClientProfile(HttpClient httpClient)

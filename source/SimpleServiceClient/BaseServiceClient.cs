@@ -74,13 +74,25 @@ namespace SimpleServiceClient
         protected async Task<TResult> ExecuteGet<TResult>(Uri uri, CancellationToken cancellationToken = default)
             where TResult : new()
         {
-            var message = await _serviceManager.GetAsync(uri, cancellationToken);
-
             TResult? result = default;
 
-            if (message.IsSuccessStatusCode)
+            try
             {
-                result = await message.Content.ReadFromJsonAsync<TResult>(cancellationToken);
+                var message = await _serviceManager.GetAsync(uri, cancellationToken);
+
+                if (message.IsSuccessStatusCode)
+                {
+                    result = await message.Content.ReadFromJsonAsync<TResult>(cancellationToken);
+                }
+            }
+            catch (Exception exception)
+            {
+                _logger.LogError(exception, "An exception occurred for the uri: {Uri}", uri);
+
+                if (_throwExceptions)
+                {
+                    throw;
+                }
             }
 
             return result ?? new TResult();
@@ -96,13 +108,25 @@ namespace SimpleServiceClient
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
         protected async Task<TResult> ExecuteGet<TResult>(Uri uri, TResult defaultResult, CancellationToken cancellationToken = default)
         {
-            var message = await _serviceManager.GetAsync(uri, cancellationToken);
-
             TResult? result = default;
 
-            if (message.IsSuccessStatusCode)
+            try
             {
-                result = await message.Content.ReadFromJsonAsync<TResult>(cancellationToken);
+                var message = await _serviceManager.GetAsync(uri, cancellationToken);
+
+                if (message.IsSuccessStatusCode)
+                {
+                    result = await message.Content.ReadFromJsonAsync<TResult>(cancellationToken);
+                }
+            }
+            catch (Exception exception)
+            {
+                _logger.LogError(exception, "An exception occurred for the uri: {Uri}", uri);
+
+                if (_throwExceptions)
+                {
+                    throw;
+                }
             }
 
             return result ?? defaultResult;
