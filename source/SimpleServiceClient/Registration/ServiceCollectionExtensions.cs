@@ -4,9 +4,11 @@
 
 namespace SimpleServiceClient.Registration
 {
+    using FactoryFoundation;
     using Microsoft.Extensions.DependencyInjection;
     using Polly;
     using SimpleServiceClient;
+    using System.Reflection;
 
     /// <summary>
     /// Extension methods that allow for easy registration of the SimpleServiceClient library.
