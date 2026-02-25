@@ -12,6 +12,11 @@ namespace SimpleServiceClient
         where TProfile : ServiceClientProfile
     {
         /// <summary>
+        /// Gets the http client for runtime configuration.
+        /// </summary>
+        HttpClient HttpClient { get; }
+
+        /// <summary>
         /// Performs a GET request against a uri.
         /// </summary>
         /// <param name="uri">A <see cref="Uri"/> to query against.</param>

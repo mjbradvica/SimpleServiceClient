@@ -22,6 +22,9 @@ namespace SimpleServiceClient
         }
 
         /// <inheritdoc/>
+        public HttpClient HttpClient => _profile.Client;
+
+        /// <inheritdoc/>
         public async Task<HttpResponseMessage> GetAsync(Uri uri, CancellationToken cancellationToken = default)
         {
             return await _profile.Client.GetAsync(uri, cancellationToken);

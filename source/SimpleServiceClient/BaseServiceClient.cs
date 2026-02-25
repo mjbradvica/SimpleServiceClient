@@ -15,8 +15,6 @@ namespace SimpleServiceClient
         where TProfile : ServiceClientProfile
     {
         private readonly bool _throwExceptions;
-        private readonly IServiceManager<TProfile> _serviceManager;
-        private readonly ILogger<BaseServiceClient<TProfile>> _logger;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="BaseServiceClient{TService}"/> class.
@@ -26,8 +24,8 @@ namespace SimpleServiceClient
         /// <param name="throwExceptions">A flag that will indicate the client should throw exceptions caught.</param>
         protected BaseServiceClient(IServiceManager<TProfile> serviceManager, ILogger<BaseServiceClient<TProfile>> logger, bool throwExceptions = false)
         {
-            _serviceManager = serviceManager;
-            _logger = logger;
+            ServiceManager = serviceManager;
+            Logger = logger;
             _throwExceptions = throwExceptions;
         }
 
@@ -38,10 +36,20 @@ namespace SimpleServiceClient
         /// <param name="logger">An instance of the <see cref="ILogger{TCategoryName}"/> interface.</param>
         protected BaseServiceClient(IServiceManager<TProfile> serviceManager, ILogger<BaseServiceClient<TProfile>> logger)
         {
-            _serviceManager = serviceManager;
-            _logger = logger;
+            ServiceManager = serviceManager;
+            Logger = logger;
             _throwExceptions = false;
         }
+
+        /// <summary>
+        /// Gets the service manager.
+        /// </summary>
+        protected IServiceManager<TProfile> ServiceManager { get; }
+
+        /// <summary>
+        /// Gets the logger.
+        /// </summary>
+        protected ILogger<BaseServiceClient<TProfile>> Logger { get; }
 
         /// <summary>
         /// Performs a GET request and returns a nullable result.
@@ -56,7 +64,7 @@ namespace SimpleServiceClient
 
             try
             {
-                var message = await _serviceManager.GetAsync(uri, cancellationToken);
+                var message = await ServiceManager.GetAsync(uri, cancellationToken);
 
                 if (message.IsSuccessStatusCode)
                 {
@@ -65,7 +73,7 @@ namespace SimpleServiceClient
             }
             catch (Exception exception)
             {
-                _logger.LogError(exception, "An exception occurred for the uri: {Uri}", uri);
+                Logger.LogError(exception, "An exception occurred for the uri: {Uri}", uri);
 
                 if (_throwExceptions)
                 {
@@ -90,7 +98,7 @@ namespace SimpleServiceClient
 
             try
             {
-                var message = await _serviceManager.GetAsync(uri, cancellationToken);
+                var message = await ServiceManager.GetAsync(uri, cancellationToken);
 
                 if (message.IsSuccessStatusCode)
                 {
@@ -99,7 +107,7 @@ namespace SimpleServiceClient
             }
             catch (Exception exception)
             {
-                _logger.LogError(exception, "An exception occurred for the uri: {Uri}", uri);
+                Logger.LogError(exception, "An exception occurred for the uri: {Uri}", uri);
 
                 if (_throwExceptions)
                 {
@@ -124,7 +132,7 @@ namespace SimpleServiceClient
 
             try
             {
-                var message = await _serviceManager.GetAsync(uri, cancellationToken);
+                var message = await ServiceManager.GetAsync(uri, cancellationToken);
 
                 if (message.IsSuccessStatusCode)
                 {
@@ -133,7 +141,7 @@ namespace SimpleServiceClient
             }
             catch (Exception exception)
             {
-                _logger.LogError(exception, "An exception occurred for the uri: {Uri}", uri);
+                Logger.LogError(exception, "An exception occurred for the uri: {Uri}", uri);
 
                 if (_throwExceptions)
                 {
