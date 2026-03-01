@@ -167,5 +167,78 @@ namespace SimpleServiceClient.Tests
 
             await Assert.ThrowsAsync<ArgumentException>(async () => await _serviceClient.NewDefaultGet<TestResponse>());
         }
+
+        /// <summary>
+        /// Default value get returns default on non-success code.
+        /// </summary>
+        /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+        [TestMethod]
+        public async Task ExecuteDefaultValueGetNonSuccessCodeReturnsDefaultValue()
+        {
+            const string defaultValue = "hello!";
+
+            _serviceManager.Setup(manager => manager.GetAsync(It.IsAny<Uri>(), CancellationToken.None))
+                .ReturnsAsync(new HttpResponseMessage(HttpStatusCode.BadRequest));
+
+            string result = await _serviceClient.DefaultValueGet(defaultValue);
+
+            Assert.AreEqual(defaultValue, result);
+        }
+
+        /// <summary>
+        /// Success has correct value.
+        /// </summary>
+        /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+        [TestMethod]
+        public async Task ExecuteDefaultValueGetSuccessReturnsExpected()
+        {
+            var expected = new TestResponse
+            {
+                Name = "Hello!",
+            };
+
+            _serviceManager.Setup(manager => manager.GetAsync(It.IsAny<Uri>(), CancellationToken.None))
+                .ReturnsAsync(new HttpResponseMessage
+                {
+                    Content = JsonContent.Create(expected),
+                    StatusCode = HttpStatusCode.OK,
+                });
+
+            var result = await _serviceClient.DefaultValueGet(new TestResponse());
+
+            Assert.AreEqual(expected.Name, result.Name);
+        }
+
+        /// <summary>
+        /// Default value is returned on an exception.
+        /// </summary>
+        /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+        [TestMethod]
+        public async Task ExecuteDefaultValueOnExceptionReturnsExpectedValue()
+        {
+            var expected = new TestResponse();
+
+            _serviceManager.Setup(manager => manager.GetAsync(It.IsAny<Uri>(), CancellationToken.None))
+                .ThrowsAsync(new ArgumentException());
+
+            var result = await _serviceClient.DefaultValueGet(expected);
+
+            Assert.AreEqual(expected, result);
+        }
+
+        /// <summary>
+        /// Method throws when flag is enabled.
+        /// </summary>
+        /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+        [TestMethod]
+        public async Task ExecuteDefaultValueThrowsWhenFlagEnabled()
+        {
+            _serviceClient = new TestServiceClient(_serviceManager.Object, _logger.Object, true);
+
+            _serviceManager.Setup(manager => manager.GetAsync(It.IsAny<Uri>(), CancellationToken.None))
+                .ThrowsAsync(new ArgumentException());
+
+            await Assert.ThrowsAsync<ArgumentException>(async () => await _serviceClient.DefaultValueGet(new TestResponse()));
+        }
     }
 }

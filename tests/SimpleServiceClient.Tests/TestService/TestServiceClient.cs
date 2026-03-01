@@ -15,6 +15,12 @@ namespace SimpleServiceClient.Tests.TestService
         {
         }
 
+        /// <inheritdoc />
+        public TestServiceClient(IServiceManager serviceManager, ILogger<BaseServiceClient> logger)
+            : base(serviceManager, logger)
+        {
+        }
+
         /// <summary>
         /// Test value method.
         /// </summary>
@@ -34,6 +40,17 @@ namespace SimpleServiceClient.Tests.TestService
             where T : new()
         {
             return await ExecuteGet<T>(new Uri("https://www.test.com"), CancellationToken.None);
+        }
+
+        /// <summary>
+        /// Test get with default value.
+        /// </summary>
+        /// <typeparam name="T">The type of the response.</typeparam>
+        /// <param name="defaultValue">The default response if initial is null.</param>
+        /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+        public async Task<T> DefaultValueGet<T>(T defaultValue)
+        {
+            return await ExecuteGet(new Uri("https://www.test.com"), defaultValue, CancellationToken.None);
         }
     }
 }

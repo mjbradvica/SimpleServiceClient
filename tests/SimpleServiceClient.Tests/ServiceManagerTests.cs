@@ -31,6 +31,17 @@ namespace SimpleServiceClient.Tests
         }
 
         /// <summary>
+        /// Can reach client.
+        /// </summary>
+        [TestMethod]
+        public void ClientIsNotNull()
+        {
+            var client = _manager.HttpClient;
+
+            Assert.IsNotNull(client);
+        }
+
+        /// <summary>
         /// Get Async correct passes command.
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the result of the asynchronous operation.</returns>

@@ -19,7 +19,8 @@ namespace SimpleServiceClient.Tests
     {
         private readonly Mock<ITranslator> _translator;
         private readonly Mock<IServiceManager<TestTranslatedServiceProfile>> _serviceManger;
-        private readonly TestTranslatedServiceWithProfile _service;
+        private readonly Mock<ILogger<BaseServiceClient<TestTranslatedServiceProfile>>> _logger;
+        private TestTranslatedServiceWithProfile _service;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="BaseTranslatedServiceClientTests"/> class.
@@ -28,8 +29,23 @@ namespace SimpleServiceClient.Tests
         {
             _translator = new Mock<ITranslator>();
             _serviceManger = new Mock<IServiceManager<TestTranslatedServiceProfile>>();
-            var logger = new Mock<ILogger<BaseServiceClient<TestTranslatedServiceProfile>>>();
-            _service = new TestTranslatedServiceWithProfile(_serviceManger.Object, logger.Object, _translator.Object);
+            _logger = new Mock<ILogger<BaseServiceClient<TestTranslatedServiceProfile>>>();
+            _service = new TestTranslatedServiceWithProfile(_serviceManger.Object, _logger.Object, _translator.Object);
+        }
+
+        /// <summary>
+        /// Exceptions flag is passed correctly.
+        /// </summary>
+        /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+        [TestMethod]
+        public async Task ThrowFlagIsPassedCorrectly()
+        {
+            _service = new TestTranslatedServiceWithProfile(_serviceManger.Object, _logger.Object, _translator.Object, true);
+
+            _serviceManger.Setup(manager => manager.GetAsync(It.IsAny<Uri>(), CancellationToken.None))
+                .ThrowsAsync(new ArgumentNullException());
+
+            await Assert.ThrowsAsync<ArgumentNullException>(async () => await _service.TestNewGet());
         }
 
         /// <summary>
@@ -69,6 +85,50 @@ namespace SimpleServiceClient.Tests
                 .Returns(string.Empty);
 
             string? result = await _service.TestNullableGet();
+
+            Assert.IsNotNull(result);
+        }
+
+        /// <summary>
+        /// Get for default constructor translates correctly.
+        /// </summary>
+        /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+        [TestMethod]
+        public async Task ExecuteDefaultConstructorTranslatesCorrectly()
+        {
+            _serviceManger.Setup(manager => manager.GetAsync(It.IsAny<Uri>(), CancellationToken.None))
+                .ReturnsAsync(new HttpResponseMessage
+                {
+                    StatusCode = HttpStatusCode.OK,
+                    Content = JsonContent.Create<TestNewResponse?>(new TestNewResponse()),
+                });
+
+            _translator.Setup(translator => translator.Translate<TestNewResponse, TestNewResponse>(It.IsAny<TestNewResponse>()))
+                .Returns(new TestNewResponse());
+
+            var result = await _service.TestNewGet();
+
+            Assert.IsNotNull(result);
+        }
+
+        /// <summary>
+        /// Get for default response translates correctly.
+        /// </summary>
+        /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+        [TestMethod]
+        public async Task ExecuteDefaultResponseTranslatesCorrectly()
+        {
+            _serviceManger.Setup(manager => manager.GetAsync(It.IsAny<Uri>(), CancellationToken.None))
+                .ReturnsAsync(new HttpResponseMessage
+                {
+                    StatusCode = HttpStatusCode.OK,
+                    Content = JsonContent.Create<TestNewResponse?>(new TestNewResponse()),
+                });
+
+            _translator.Setup(translator => translator.Translate<TestNewResponse, TestNewResponse>(It.IsAny<TestNewResponse>()))
+                .Returns(new TestNewResponse());
+
+            var result = await _service.TestDefaultResponseGet();
 
             Assert.IsNotNull(result);
         }
